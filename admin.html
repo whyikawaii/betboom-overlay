@@ -1,3 +1,5 @@
+```html
+<!-- admin.html -->
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -102,7 +104,6 @@ button:hover{
   font-size:18px;
 }
 
-/* ANIM */
 @keyframes floatIn{
   from{
     transform:translateY(20px);
@@ -119,6 +120,7 @@ button:hover{
 <body>
 
 <div class="panel">
+
   <h1>BetBoom Admin</h1>
 
   <label>ПРОМОКОД</label>
@@ -135,6 +137,7 @@ button:hover{
   </button>
 
   <div class="row">
+
     <button
       class="show"
       onclick="showOverlay()">
@@ -146,58 +149,66 @@ button:hover{
       onclick="hideOverlay()">
       СКРЫТЬ
     </button>
+
   </div>
 
-  <div class="status" id="status"></div>
+  <div
+    class="status"
+    id="status">
+  </div>
+
 </div>
 
 <script>
-const input = document.getElementById("promoInput");
-const statusText = document.getElementById("status");
+const input =
+  document.getElementById("promoInput");
 
-const channel = new BroadcastChannel("betboom");
+const statusText =
+  document.getElementById("status");
 
 function savePromo(){
-  const val = input.value.trim();
+
+  const val =
+    input.value.trim();
 
   if(!val) return;
 
-  localStorage.setItem("bb_promo", val);
-
-  channel.postMessage("update");
+  localStorage.setItem(
+    "bb_promo",
+    val
+  );
 
   input.blur();
 }
 
 function showOverlay(){
-  localStorage.setItem("bb_visible","true");
 
-  channel.postMessage("update");
+  localStorage.setItem(
+    "bb_visible",
+    "true"
+  );
 
   updateStatus();
 }
 
 function hideOverlay(){
-  localStorage.setItem("bb_visible","false");
 
-  channel.postMessage("update");
+  localStorage.setItem(
+    "bb_visible",
+    "false"
+  );
 
   updateStatus();
 }
 
 function updateStatus(){
+
   statusText.innerText =
-    localStorage.getItem("bb_visible") === "true"
+    localStorage.getItem("bb_visible")
+    === "true"
       ? "Статус: ON"
       : "Статус: OFF";
 }
-
-window.addEventListener(
-  "storage",
-  updateStatus
-);
-
-channel.onmessage = updateStatus;
 
 updateStatus();
 </script>
