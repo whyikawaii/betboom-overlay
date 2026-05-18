@@ -1,3 +1,6 @@
+
+
+```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -7,11 +10,13 @@
 
 <style>
 *{box-sizing:border-box;}
+
 body{
   margin:0;
   overflow:hidden;
-  background:transparent;
+  background:#0000;
   font-family:Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
 }
 
 /* OVERLAY */
@@ -29,12 +34,16 @@ body{
   justify-content:space-between;
   padding:0 70px;
 
-  background: linear-gradient(135deg,
+  background-color:rgba(5,11,22,.96);
+
+  background:linear-gradient(135deg,
     rgba(5,11,22,.96) 0%,
     rgba(2,6,13,.96) 60%,
     rgba(8,17,31,.96) 100%);
 
+  -webkit-backdrop-filter:blur(14px);
   backdrop-filter:blur(14px);
+
   border:1px solid rgba(255,255,255,.08);
   border-radius:28px;
 
@@ -43,9 +52,12 @@ body{
     0 0 50px rgba(0,0,0,.7),
     0 0 120px rgba(0,120,255,.10);
 
-  transition: transform .85s cubic-bezier(.22,1,.36,1),
-              opacity .5s ease,
-              filter .5s ease;
+  transition:
+    transform .85s cubic-bezier(.22,1,.36,1),
+    opacity .5s ease,
+    filter .5s ease;
+
+  isolation:isolate;
 }
 
 /* SHOW */
@@ -55,8 +67,9 @@ body{
   filter:brightness(1.05);
 }
 
-/* LIGHTS (оставил как есть) */
-#overlay::before, #overlay::after{
+/* LIGHTS */
+#overlay::before,
+#overlay::after{
   content:"";
   position:absolute;
   width:520px;
@@ -96,14 +109,19 @@ body{
 }
 
 /* TEXT */
-.left{position:relative;z-index:5;}
+.left{
+  position:relative;
+  z-index:5;
+}
 
 .logo{
   font-size:78px;
   font-weight:900;
   color:#fff;
   letter-spacing:-3px;
-  text-shadow:0 3px 10px rgba(0,0,0,.9),0 0 6px rgba(0,0,0,.6);
+  text-shadow:
+    0 3px 10px rgba(0,0,0,.9),
+    0 0 6px rgba(0,0,0,.6);
 }
 
 .sub{
@@ -126,6 +144,7 @@ body{
   border-radius:24px;
 
   background:linear-gradient(180deg,#fff,#ebebeb);
+
   display:flex;
   align-items:center;
   justify-content:center;
@@ -148,14 +167,29 @@ body{
 
 /* ANIM */
 @keyframes pulseGlow{
-  0%{transform:scale(1) rotate(0deg);opacity:.7;}
-  50%{transform:scale(1.08) rotate(8deg);opacity:1;}
-  100%{transform:scale(1) rotate(0deg);opacity:.7;}
+  0%{
+    transform:scale(1) rotate(0deg);
+    opacity:.7;
+  }
+  50%{
+    transform:scale(1.08) rotate(8deg);
+    opacity:1;
+  }
+  100%{
+    transform:scale(1) rotate(0deg);
+    opacity:.7;
+  }
 }
 
 @keyframes textGlow{
-  0%{opacity:.3; transform:translateY(6px);}
-  100%{opacity:1; transform:translateY(0);}
+  0%{
+    opacity:.3;
+    transform:translateY(6px);
+  }
+  100%{
+    opacity:1;
+    transform:translateY(0);
+  }
 }
 </style>
 </head>
@@ -180,31 +214,25 @@ const codeBox = document.getElementById("codeBox");
 
 const channel = new BroadcastChannel("betboom");
 
-function getQueue(){
-  return JSON.parse(localStorage.getItem("bb_queue") || '["BET777"]');
-}
-
-function getIndex(){
-  return parseInt(localStorage.getItem("bb_index") || "0");
-}
-
 function render(){
-  const queue = getQueue();
-  let index = getIndex();
-
-  if(index >= queue.length) index = 0;
-
-  const promo = queue[index] || "BET777";
+  const promo = localStorage.getItem("bb_promo") || "BET777";
 
   promoEl.innerText = promo;
 
   const base = 260;
   const perChar = 18;
-  const width = Math.min(520, base + promo.length * perChar);
+
+  const width = Math.min(
+    520,
+    base + promo.length * perChar
+  );
 
   codeBox.style.width = width + "px";
 
-  overlay.classList.toggle("show", localStorage.getItem("bb_visible") === "true");
+  overlay.classList.toggle(
+    "show",
+    localStorage.getItem("bb_visible") === "true"
+  );
 
   codeBox.classList.remove("pop");
   void codeBox.offsetWidth;
@@ -219,3 +247,4 @@ render();
 
 </body>
 </html>
+```
