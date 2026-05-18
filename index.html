@@ -1,181 +1,214 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<title>BetBoom Admin</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BetBoom Premium Overlay</title>
 
 <style>
+*{box-sizing:border-box;}
 body{
   margin:0;
-  height:100vh;
+  overflow:hidden;
+  background:transparent;
+  font-family:Arial,sans-serif;
+}
+
+/* OVERLAY */
+#overlay{
+  position:fixed;
+  left:50%;
+  bottom:40px;
+  transform:translate(-50%,220px) scale(.98);
+  width:1080px;
+  height:190px;
+  overflow:hidden;
+  opacity:0;
   display:flex;
-  justify-content:center;
   align-items:center;
-  background:#0b1220;
-  font-family:Arial;
-  color:white;
-}
-
-.panel{
-  width:460px;
-  padding:30px;
-  border-radius:22px;
-  background:linear-gradient(145deg,#111827,#0f172a);
-  border:1px solid rgba(255,255,255,.08);
-}
-
-h1{margin-top:0}
-
-input{
-  width:100%;
-  height:50px;
-  border-radius:14px;
-  border:none;
-  background:#1e293b;
-  color:white;
-  font-size:18px;
-  padding:0 15px;
-  margin-bottom:10px;
-}
-
-button{
-  border:none;
-  border-radius:14px;
-  padding:12px;
-  font-weight:bold;
-  cursor:pointer;
-  margin-top:6px;
-}
-
-.add{background:#22c55e;width:100%;}
-.show{background:#00aaff;color:white;flex:1;}
-.hide{background:#ef4444;color:white;flex:1;}
-.next{background:white;width:100%;color:black;}
-
-.row{display:flex;gap:10px;margin-top:10px;}
-
-.item{
-  display:flex;
   justify-content:space-between;
-  background:#111827;
-  padding:10px;
-  margin-top:8px;
-  border-radius:10px;
+  padding:0 70px;
+
+  background: linear-gradient(135deg,
+    rgba(5,11,22,.96) 0%,
+    rgba(2,6,13,.96) 60%,
+    rgba(8,17,31,.96) 100%);
+
+  backdrop-filter:blur(14px);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:28px;
+
+  box-shadow:
+    inset 0 0 40px rgba(255,255,255,.03),
+    0 0 50px rgba(0,0,0,.7),
+    0 0 120px rgba(0,120,255,.10);
+
+  transition: transform .85s cubic-bezier(.22,1,.36,1),
+              opacity .5s ease,
+              filter .5s ease;
 }
 
-.small button{
-  margin-left:5px;
-  padding:5px 8px;
-  border-radius:8px;
-  background:#334155;
-  color:white;
+/* SHOW */
+#overlay.show{
+  transform:translate(-50%,0) scale(1);
+  opacity:1;
+  filter:brightness(1.05);
+}
+
+/* LIGHTS (оставил как есть) */
+#overlay::before, #overlay::after{
+  content:"";
+  position:absolute;
+  width:520px;
+  height:520px;
+  border-radius:50%;
+  filter:blur(22px);
+  animation:pulseGlow 8s ease-in-out infinite;
+}
+
+#overlay::before{
+  left:-260px;
+  top:-260px;
+  background:radial-gradient(circle,
+    rgba(255,0,0,1) 0%,
+    rgba(255,120,0,1) 18%,
+    rgba(255,220,0,1) 32%,
+    rgba(255,255,255,.95) 42%,
+    rgba(0,140,255,.95) 55%,
+    rgba(0,50,140,.95) 67%,
+    rgba(0,0,0,0) 76%);
+  opacity:.95;
+}
+
+#overlay::after{
+  right:-260px;
+  bottom:-260px;
+  transform:rotate(180deg);
+  background:radial-gradient(circle,
+    rgba(255,0,0,1) 0%,
+    rgba(255,120,0,1) 18%,
+    rgba(255,220,0,1) 32%,
+    rgba(255,255,255,.95) 42%,
+    rgba(0,140,255,.95) 55%,
+    rgba(0,50,140,.95) 67%,
+    rgba(0,0,0,0) 76%);
+  opacity:.75;
+}
+
+/* TEXT */
+.left{position:relative;z-index:5;}
+
+.logo{
+  font-size:78px;
+  font-weight:900;
+  color:#fff;
+  letter-spacing:-3px;
+  text-shadow:0 3px 10px rgba(0,0,0,.9),0 0 6px rgba(0,0,0,.6);
+}
+
+.sub{
+  margin-top:12px;
+  font-size:28px;
+  font-weight:900;
+  color:#fff;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  text-shadow:0 2px 8px rgba(0,0,0,.9);
+}
+
+/* CODE */
+.codeBox{
+  position:relative;
+  z-index:5;
+  min-width:340px;
+  height:94px;
+  padding:0 46px;
+  border-radius:24px;
+
+  background:linear-gradient(180deg,#fff,#ebebeb);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  transition:width .35s ease, transform .25s ease;
+  overflow:hidden;
+}
+
+.codeBox.pop{
+  transform:scale(1.05);
+}
+
+#promo{
+  font-size:44px;
+  font-weight:900;
+  color:#000;
+  letter-spacing:2px;
+  animation:textGlow .8s ease;
+}
+
+/* ANIM */
+@keyframes pulseGlow{
+  0%{transform:scale(1) rotate(0deg);opacity:.7;}
+  50%{transform:scale(1.08) rotate(8deg);opacity:1;}
+  100%{transform:scale(1) rotate(0deg);opacity:.7;}
+}
+
+@keyframes textGlow{
+  0%{opacity:.3; transform:translateY(6px);}
+  100%{opacity:1; transform:translateY(0);}
 }
 </style>
 </head>
 
 <body>
 
-<div class="panel">
-  <h1>Admin Panel</h1>
-
-  <input id="input" placeholder="Промокод">
-
-  <button class="add" onclick="add()">+ добавить в очередь</button>
-
-  <div class="row">
-    <button class="show" onclick="show()">SHOW</button>
-    <button class="hide" onclick="hide()">HIDE</button>
+<div id="overlay">
+  <div class="left">
+    <div class="logo">BetBoom</div>
+    <div class="sub">ЗАБИРАЙ ФРИБЕТ</div>
   </div>
 
-  <button class="next" onclick="next()">NEXT PROMO</button>
-
-  <div id="list"></div>
+  <div class="codeBox" id="codeBox">
+    <div id="promo">BET777</div>
+  </div>
 </div>
 
 <script>
-const input = document.getElementById("input");
-const list = document.getElementById("list");
+const overlay = document.getElementById("overlay");
+const promoEl = document.getElementById("promo");
+const codeBox = document.getElementById("codeBox");
+
 const channel = new BroadcastChannel("betboom");
 
 function getQueue(){
   return JSON.parse(localStorage.getItem("bb_queue") || '["BET777"]');
 }
 
-function setQueue(q){
-  localStorage.setItem("bb_queue", JSON.stringify(q));
-}
-
 function getIndex(){
-  return Number(localStorage.getItem("bb_index") || 0);
-}
-
-function setIndex(i){
-  localStorage.setItem("bb_index", i);
+  return parseInt(localStorage.getItem("bb_index") || "0");
 }
 
 function render(){
-  const q = getQueue();
+  const queue = getQueue();
+  let index = getIndex();
 
-  list.innerHTML = q.map((c,i)=>`
-    <div class="item">
-      <div>${i+1}. ${c}</div>
-      <div class="small">
-        <button onclick="set(${i})">▶</button>
-        <button onclick="del(${i})">✕</button>
-      </div>
-    </div>
-  `).join("");
-}
+  if(index >= queue.length) index = 0;
 
-function add(){
-  const val = input.value.trim();
-  if(!val) return;
+  const promo = queue[index] || "BET777";
 
-  const q = getQueue();
-  q.push(val);
+  promoEl.innerText = promo;
 
-  setQueue(q);
-  input.value="";
+  const base = 260;
+  const perChar = 18;
+  const width = Math.min(520, base + promo.length * perChar);
 
-  channel.postMessage("update");
-  render();
-}
+  codeBox.style.width = width + "px";
 
-function del(i){
-  const q = getQueue();
-  q.splice(i,1);
+  overlay.classList.toggle("show", localStorage.getItem("bb_visible") === "true");
 
-  setQueue(q);
-  setIndex(0);
-
-  channel.postMessage("update");
-  render();
-}
-
-function set(i){
-  setIndex(i);
-  channel.postMessage("update");
-}
-
-function next(){
-  const q = getQueue();
-  if(q.length === 0) return;
-
-  let i = getIndex();
-  i = (i + 1) % q.length;
-
-  setIndex(i);
-  channel.postMessage("update");
-}
-
-function show(){
-  localStorage.setItem("bb_visible","true");
-  channel.postMessage("update");
-}
-
-function hide(){
-  localStorage.setItem("bb_visible","false");
-  channel.postMessage("update");
+  codeBox.classList.remove("pop");
+  void codeBox.offsetWidth;
+  codeBox.classList.add("pop");
 }
 
 window.addEventListener("storage", render);
