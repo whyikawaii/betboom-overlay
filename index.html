@@ -6,13 +6,15 @@
 <title>BetBoom Overlay</title>
 
 <style>
+*{box-sizing:border-box;}
+
 html,body{
   margin:0;
   width:100%;
   height:100%;
   overflow:hidden;
   background:transparent;
-  font-family:Arial;
+  font-family:Arial,sans-serif;
 }
 
 #wrap{
@@ -25,20 +27,25 @@ html,body{
 }
 
 #overlay{
+  position:relative;
   width:min(90vw,1080px);
   min-height:190px;
+  overflow:hidden;
   display:flex;
-  justify-content:space-between;
   align-items:center;
-  padding:30px 60px;
+  justify-content:space-between;
+  gap:40px;
+  padding:clamp(20px,2vw,32px) clamp(30px,4vw,70px);
   border-radius:28px;
 
-  background:rgba(10,15,25,.95);
+  background:linear-gradient(135deg,rgba(5,11,22,.96) 0%,rgba(2,6,13,.96) 60%,rgba(8,17,31,.96) 100%);
   border:1px solid rgba(255,255,255,.08);
+  box-shadow:inset 0 0 40px rgba(255,255,255,.03),0 0 50px rgba(0,0,0,.7),0 0 120px rgba(0,120,255,.10);
+  backdrop-filter:blur(14px);
 
+  transition:opacity .4s ease, transform .6s cubic-bezier(.22,1,.36,1);
   opacity:0;
   transform:translateY(120px);
-  transition:.5s;
 }
 
 #overlay.show{
@@ -46,28 +53,38 @@ html,body{
   transform:translateY(0);
 }
 
+.left{z-index:5;}
 .logo{
-  font-size:60px;
+  font-size:clamp(42px,5vw,78px);
   font-weight:900;
-  color:white;
+  color:#fff;
+  letter-spacing:-3px;
 }
-
 .sub{
-  color:white;
-  font-weight:700;
-  text-transform:uppercase;
+  margin-top:10px;
+  font-size:clamp(16px,2vw,28px);
+  font-weight:900;
+  color:#fff;
   letter-spacing:2px;
+  text-transform:uppercase;
 }
 
 .codeBox{
-  background:white;
-  padding:20px 50px;
-  border-radius:20px;
+  z-index:5;
+  min-width:260px;
+  height:94px;
+  padding:0 40px;
+  border-radius:24px;
+  background:linear-gradient(180deg,#fff,#ebebeb);
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
 #promo{
-  font-size:40px;
+  font-size:clamp(28px,3vw,44px);
   font-weight:900;
+  color:#000;
 }
 </style>
 </head>
@@ -76,7 +93,7 @@ html,body{
 
 <div id="wrap">
   <div id="overlay">
-    <div>
+    <div class="left">
       <div class="logo">BetBoom</div>
       <div class="sub">ЗАБИРАЙ ФРИБЕТ</div>
     </div>
@@ -91,24 +108,23 @@ html,body{
 const overlay = document.getElementById("overlay");
 const promo = document.getElementById("promo");
 
-async function load(){
+async function loadState(){
   try{
     const res = await fetch("state.json?t=" + Date.now());
     const data = await res.json();
 
-    promo.innerText = data.promo;
+    promo.innerText = data.promo || "BET777";
 
     if(data.visible){
       overlay.classList.add("show");
     } else {
       overlay.classList.remove("show");
     }
-
   } catch(e){}
 }
 
-setInterval(load, 2000);
-load();
+setInterval(loadState, 1000);
+loadState();
 </script>
 
 </body>
