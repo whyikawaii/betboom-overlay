@@ -1,244 +1,126 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<title>BetBoom Admin</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BetBoom Overlay</title>
 
 <style>
+*{box-sizing:border-box;}
 body{
-  background:#0b1220;
-  color:white;
-  font-family:Arial;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
   margin:0;
+  overflow:hidden;
+  background:transparent;
+  font-family:Arial,sans-serif;
 }
 
-.panel{
-  width:460px;
-  padding:35px;
-  border-radius:24px;
-
-  background:linear-gradient(145deg,#111827,#0f172a);
-  border:1px solid rgba(255,255,255,.08);
-
-  box-shadow:0 0 40px rgba(0,140,255,.15);
-  animation:floatIn .8s ease;
-}
-
-h1{
-  margin-top:0;
-  font-size:34px;
-}
-
-label{opacity:.8}
-
-input{
-  width:100%;
-  height:54px;
-  border:none;
-  border-radius:16px;
-  background:#1e293b;
-  color:white;
-  padding:0 18px;
-  font-size:20px;
-  font-weight:700;
-  margin-bottom:12px;
-  transition:.2s;
-}
-
-input:focus{
-  outline:none;
-  transform:scale(1.02);
-}
-
-button{
-  border:none;
-  cursor:pointer;
-  font-weight:700;
-  border-radius:16px;
-  transition:.2s;
-}
-
-button:hover{
-  transform:translateY(-2px);
-}
-
-/* buttons */
-.row{display:flex;gap:10px;margin-bottom:12px;}
-
-.add{background:#22c55e;color:#000;padding:14px;}
-.show{background:#00aaff;color:white;flex:1;}
-.hide{background:#ef4444;color:white;flex:1;}
-.save{width:100%;background:white;color:black;padding:16px;margin-top:10px;}
-
-.list{
-  margin-top:15px;
-  max-height:160px;
-  overflow:auto;
-}
-
-.item{
+#overlay{
+  position:fixed;
+  left:50%;
+  bottom:40px;
+  transform:translate(-50%,220px);
+  width:1080px;
+  height:190px;
   display:flex;
+  align-items:center;
   justify-content:space-between;
-  padding:10px;
-  background:#111827;
-  border-radius:12px;
-  margin-bottom:8px;
-  animation:fadeIn .3s ease;
+  padding:0 70px;
+
+  background:linear-gradient(135deg,
+    rgba(5,11,22,.96),
+    rgba(2,6,13,.96),
+    rgba(8,17,31,.96));
+
+  border-radius:28px;
+  border:1px solid rgba(255,255,255,.08);
+  backdrop-filter:blur(14px);
+
+  opacity:0;
+  transition:.7s cubic-bezier(.22,1,.36,1);
 }
 
-.smallBtn{
-  background:#334155;
+#overlay.show{
+  transform:translate(-50%,0);
+  opacity:1;
+}
+
+.logo{
+  font-size:78px;
+  font-weight:900;
   color:white;
-  padding:6px 10px;
-  border-radius:10px;
-  margin-left:5px;
 }
 
-.status{
-  margin-top:15px;
-  opacity:.7;
+.sub{
+  font-size:26px;
+  font-weight:900;
+  color:white;
+  opacity:.9;
 }
 
-/* ANIM */
-@keyframes floatIn{
-  from{transform:translateY(20px);opacity:0;}
-  to{transform:translateY(0);opacity:1;}
+.codeBox{
+  min-width:340px;
+  height:94px;
+  border-radius:22px;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:.3s;
 }
 
-@keyframes fadeIn{
-  from{opacity:0;transform:scale(.95);}
-  to{opacity:1;transform:scale(1);}
+#promo{
+  font-size:44px;
+  font-weight:900;
+  color:#000;
 }
 </style>
 </head>
 
 <body>
 
-<div class="panel">
-  <h1>BetBoom Admin</h1>
-
-  <label>НОВЫЙ ПРОМОКОД</label>
-  <input id="promoInput" placeholder="Введите код"/>
-
-  <button class="add" onclick="addPromo()">+ ДОБАВИТЬ В ОЧЕРЕДЬ</button>
-
-  <div class="row">
-    <button class="show" onclick="showOverlay()">ПОКАЗАТЬ</button>
-    <button class="hide" onclick="hideOverlay()">СКРЫТЬ</button>
+<div id="overlay">
+  <div>
+    <div class="logo">BetBoom</div>
+    <div class="sub">ЗАБИРАЙ ФРИБЕТ</div>
   </div>
 
-  <button class="save" onclick="nextPromo()">▶ СЛЕДУЮЩИЙ ПРОМО</button>
-
-  <div class="list" id="list"></div>
-
-  <div class="status" id="status"></div>
+  <div class="codeBox">
+    <div id="promo">BET777</div>
+  </div>
 </div>
 
 <script>
-const input = document.getElementById("promoInput");
-const list = document.getElementById("list");
-const statusText = document.getElementById("status");
-
+const overlay = document.getElementById("overlay");
+const promoEl = document.getElementById("promo");
 const channel = new BroadcastChannel("betboom");
 
 function getQueue(){
   return JSON.parse(localStorage.getItem("bb_queue") || '["BET777"]');
 }
 
-function setQueue(q){
-  localStorage.setItem("bb_queue", JSON.stringify(q));
-}
-
 function getIndex(){
-  return parseInt(localStorage.getItem("bb_index") || "0");
+  return Number(localStorage.getItem("bb_index") || 0);
 }
 
-function setIndex(i){
-  localStorage.setItem("bb_index", i);
-}
-
-function renderList(){
+function render(){
   const queue = getQueue();
+  let index = getIndex();
 
-  list.innerHTML = queue.map((c,i)=>`
-    <div class="item">
-      <div>#${i+1} ${c}</div>
-      <div>
-        <button class="smallBtn" onclick="removePromo(${i})">✕</button>
-        <button class="smallBtn" onclick="setPromo(${i})">▶</button>
-      </div>
-    </div>
-  `).join("");
+  if(index >= queue.length) index = 0;
+
+  const promo = queue[index] || "BET777";
+  promoEl.innerText = promo;
+
+  overlay.classList.toggle("show", localStorage.getItem("bb_visible") === "true");
 }
 
-function addPromo(){
-  const val = input.value.trim();
-  if(!val) return;
+window.addEventListener("storage", render);
+channel.onmessage = render;
 
-  const q = getQueue();
-  q.push(val);
+// страховка (GitHub Pages иногда тупит)
+setInterval(render, 1000);
 
-  setQueue(q);
-  input.value = "";
-
-  channel.postMessage("update");
-  renderList();
-}
-
-function removePromo(i){
-  const q = getQueue();
-  q.splice(i,1);
-
-  setQueue(q);
-  setIndex(0);
-
-  channel.postMessage("update");
-  renderList();
-}
-
-function setPromo(i){
-  setIndex(i);
-  channel.postMessage("update");
-}
-
-function nextPromo(){
-  const q = getQueue();
-  let i = getIndex();
-
-  i = (i + 1) % q.length;
-  setIndex(i);
-
-  channel.postMessage("update");
-}
-
-function showOverlay(){
-  localStorage.setItem("bb_visible","true");
-  channel.postMessage("update");
-  updateStatus();
-}
-
-function hideOverlay(){
-  localStorage.setItem("bb_visible","false");
-  channel.postMessage("update");
-  updateStatus();
-}
-
-function updateStatus(){
-  statusText.innerText =
-    localStorage.getItem("bb_visible") === "true"
-      ? "Статус: ON"
-      : "Статус: OFF";
-}
-
-window.addEventListener("storage", ()=>{renderList();updateStatus();});
-channel.onmessage = ()=>{renderList();updateStatus();};
-
-renderList();
-updateStatus();
+render();
 </script>
 
 </body>
