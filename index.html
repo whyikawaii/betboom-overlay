@@ -1,6 +1,5 @@
-
-
 ```html
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -14,7 +13,7 @@
 body{
   margin:0;
   overflow:hidden;
-  background:#0000;
+  background:transparent;
   font-family:Arial,sans-serif;
   -webkit-font-smoothing:antialiased;
 }
@@ -212,10 +211,11 @@ const overlay = document.getElementById("overlay");
 const promoEl = document.getElementById("promo");
 const codeBox = document.getElementById("codeBox");
 
-const channel = new BroadcastChannel("betboom");
-
 function render(){
-  const promo = localStorage.getItem("bb_promo") || "BET777";
+
+  const promo =
+    localStorage.getItem("bb_promo")
+    || "BET777";
 
   promoEl.innerText = promo;
 
@@ -235,14 +235,15 @@ function render(){
   );
 
   codeBox.classList.remove("pop");
+
   void codeBox.offsetWidth;
+
   codeBox.classList.add("pop");
 }
 
-window.addEventListener("storage", render);
-channel.onmessage = render;
-
 render();
+
+setInterval(render,200);
 </script>
 
 </body>
