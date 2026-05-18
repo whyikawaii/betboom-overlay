@@ -1,194 +1,118 @@
 
-
 ```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>BetBoom Premium Overlay</title>
+<meta charset="UTF-8">
+<title>BetBoom Admin</title>
 
 <style>
-*{box-sizing:border-box;}
-
 body{
-  margin:0;
-  overflow:hidden;
-  background:#0000;
-  font-family:Arial,sans-serif;
-  -webkit-font-smoothing:antialiased;
-}
-
-/* OVERLAY */
-#overlay{
-  position:fixed;
-  left:50%;
-  bottom:40px;
-  transform:translate(-50%,220px) scale(.98);
-  width:1080px;
-  height:190px;
-  overflow:hidden;
-  opacity:0;
+  background:#0b1220;
+  color:white;
+  font-family:Arial;
   display:flex;
+  justify-content:center;
   align-items:center;
-  justify-content:space-between;
-  padding:0 70px;
-
-  background-color:rgba(5,11,22,.96);
-
-  background:linear-gradient(135deg,
-    rgba(5,11,22,.96) 0%,
-    rgba(2,6,13,.96) 60%,
-    rgba(8,17,31,.96) 100%);
-
-  -webkit-backdrop-filter:blur(14px);
-  backdrop-filter:blur(14px);
-
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:28px;
-
-  box-shadow:
-    inset 0 0 40px rgba(255,255,255,.03),
-    0 0 50px rgba(0,0,0,.7),
-    0 0 120px rgba(0,120,255,.10);
-
-  transition:
-    transform .85s cubic-bezier(.22,1,.36,1),
-    opacity .5s ease,
-    filter .5s ease;
-
-  isolation:isolate;
+  height:100vh;
+  margin:0;
 }
 
-/* SHOW */
-#overlay.show{
-  transform:translate(-50%,0) scale(1);
-  opacity:1;
-  filter:brightness(1.05);
-}
-
-/* LIGHTS */
-#overlay::before,
-#overlay::after{
-  content:"";
-  position:absolute;
-  width:520px;
-  height:520px;
-  border-radius:50%;
-  filter:blur(22px);
-  animation:pulseGlow 8s ease-in-out infinite;
-}
-
-#overlay::before{
-  left:-260px;
-  top:-260px;
-  background:radial-gradient(circle,
-    rgba(255,0,0,1) 0%,
-    rgba(255,120,0,1) 18%,
-    rgba(255,220,0,1) 32%,
-    rgba(255,255,255,.95) 42%,
-    rgba(0,140,255,.95) 55%,
-    rgba(0,50,140,.95) 67%,
-    rgba(0,0,0,0) 76%);
-  opacity:.95;
-}
-
-#overlay::after{
-  right:-260px;
-  bottom:-260px;
-  transform:rotate(180deg);
-  background:radial-gradient(circle,
-    rgba(255,0,0,1) 0%,
-    rgba(255,120,0,1) 18%,
-    rgba(255,220,0,1) 32%,
-    rgba(255,255,255,.95) 42%,
-    rgba(0,140,255,.95) 55%,
-    rgba(0,50,140,.95) 67%,
-    rgba(0,0,0,0) 76%);
-  opacity:.75;
-}
-
-/* TEXT */
-.left{
-  position:relative;
-  z-index:5;
-}
-
-.logo{
-  font-size:78px;
-  font-weight:900;
-  color:#fff;
-  letter-spacing:-3px;
-  text-shadow:
-    0 3px 10px rgba(0,0,0,.9),
-    0 0 6px rgba(0,0,0,.6);
-}
-
-.sub{
-  margin-top:12px;
-  font-size:28px;
-  font-weight:900;
-  color:#fff;
-  letter-spacing:2px;
-  text-transform:uppercase;
-  text-shadow:0 2px 8px rgba(0,0,0,.9);
-}
-
-/* CODE */
-.codeBox{
-  position:relative;
-  z-index:5;
-  min-width:340px;
-  height:94px;
-  padding:0 46px;
+.panel{
+  width:460px;
+  padding:35px;
   border-radius:24px;
 
-  background:linear-gradient(180deg,#fff,#ebebeb);
+  background:linear-gradient(145deg,#111827,#0f172a);
+  border:1px solid rgba(255,255,255,.08);
 
+  box-shadow:0 0 40px rgba(0,140,255,.15);
+  animation:floatIn .8s ease;
+}
+
+h1{
+  margin-top:0;
+  font-size:34px;
+}
+
+label{
+  opacity:.8;
+}
+
+input{
+  width:100%;
+  height:54px;
+  border:none;
+  border-radius:16px;
+  background:#1e293b;
+  color:white;
+  padding:0 18px;
+  font-size:20px;
+  font-weight:700;
+  margin-bottom:14px;
+  transition:.2s;
+}
+
+input:focus{
+  outline:none;
+  transform:scale(1.02);
+}
+
+button{
+  border:none;
+  cursor:pointer;
+  font-weight:700;
+  border-radius:16px;
+  transition:.2s;
+}
+
+button:hover{
+  transform:translateY(-2px);
+}
+
+.row{
   display:flex;
-  align-items:center;
-  justify-content:center;
-
-  transition:width .35s ease, transform .25s ease;
-  overflow:hidden;
+  gap:10px;
+  margin-top:12px;
 }
 
-.codeBox.pop{
-  transform:scale(1.05);
-}
-
-#promo{
-  font-size:44px;
-  font-weight:900;
+.save{
+  width:100%;
+  background:#22c55e;
   color:#000;
-  letter-spacing:2px;
-  animation:textGlow .8s ease;
+  padding:16px;
+  font-size:18px;
+}
+
+.show{
+  background:#00aaff;
+  color:white;
+  flex:1;
+  padding:14px;
+}
+
+.hide{
+  background:#ef4444;
+  color:white;
+  flex:1;
+  padding:14px;
+}
+
+.status{
+  margin-top:18px;
+  opacity:.7;
+  font-size:18px;
 }
 
 /* ANIM */
-@keyframes pulseGlow{
-  0%{
-    transform:scale(1) rotate(0deg);
-    opacity:.7;
+@keyframes floatIn{
+  from{
+    transform:translateY(20px);
+    opacity:0;
   }
-  50%{
-    transform:scale(1.08) rotate(8deg);
-    opacity:1;
-  }
-  100%{
-    transform:scale(1) rotate(0deg);
-    opacity:.7;
-  }
-}
-
-@keyframes textGlow{
-  0%{
-    opacity:.3;
-    transform:translateY(6px);
-  }
-  100%{
-    opacity:1;
+  to{
     transform:translateY(0);
+    opacity:1;
   }
 }
 </style>
@@ -196,53 +120,88 @@ body{
 
 <body>
 
-<div id="overlay">
-  <div class="left">
-    <div class="logo">BetBoom</div>
-    <div class="sub">ЗАБИРАЙ ФРИБЕТ</div>
+<div class="panel">
+  <h1>BetBoom Admin</h1>
+
+  <label>ПРОМОКОД</label>
+
+  <input
+    id="promoInput"
+    placeholder="Введите код"
+  />
+
+  <button
+    class="save"
+    onclick="savePromo()">
+    СОХРАНИТЬ ПРОМО
+  </button>
+
+  <div class="row">
+    <button
+      class="show"
+      onclick="showOverlay()">
+      ПОКАЗАТЬ
+    </button>
+
+    <button
+      class="hide"
+      onclick="hideOverlay()">
+      СКРЫТЬ
+    </button>
   </div>
 
-  <div class="codeBox" id="codeBox">
-    <div id="promo">BET777</div>
-  </div>
+  <div class="status" id="status"></div>
 </div>
 
 <script>
-const overlay = document.getElementById("overlay");
-const promoEl = document.getElementById("promo");
-const codeBox = document.getElementById("codeBox");
+const input = document.getElementById("promoInput");
+const statusText = document.getElementById("status");
 
 const channel = new BroadcastChannel("betboom");
 
-function render(){
-  const promo = localStorage.getItem("bb_promo") || "BET777";
+function savePromo(){
+  const val = input.value.trim();
 
-  promoEl.innerText = promo;
+  if(!val) return;
 
-  const base = 260;
-  const perChar = 18;
+  localStorage.setItem("bb_promo", val);
 
-  const width = Math.min(
-    520,
-    base + promo.length * perChar
-  );
+  channel.postMessage("update");
 
-  codeBox.style.width = width + "px";
-
-  overlay.classList.toggle(
-    "show",
-    localStorage.getItem("bb_visible") === "true"
-  );
-
-  codeBox.classList.remove("pop");
-  void codeBox.offsetWidth;
-  codeBox.classList.add("pop");
+  input.blur();
 }
 
-window.addEventListener("storage", render);
-channel.onmessage = render;
+function showOverlay(){
+  localStorage.setItem("bb_visible","true");
 
-render();
+  channel.postMessage("update");
+
+  updateStatus();
+}
+
+function hideOverlay(){
+  localStorage.setItem("bb_visible","false");
+
+  channel.postMessage("update");
+
+  updateStatus();
+}
+
+function updateStatus(){
+  statusText.innerText =
+    localStorage.getItem("bb_visible") === "true"
+      ? "Статус: ON"
+      : "Статус: OFF";
+}
+
+window.addEventListener(
+  "storage",
+  updateStatus
+);
+
+channel.onmessage = updateStatus;
+
+updateStatus();
 </script>
 
 </body>
